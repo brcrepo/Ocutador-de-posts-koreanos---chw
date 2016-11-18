@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         chw - ocultador de post koreanos
 // @namespace    chw.korea.orochimaru
-// @version      0.2
+// @version      0.3
 // @description  oculta los posts koreanos del foro y le da scroll infinito
 // @author       BRC
 // @match        http://www.chw.net/foro/*
@@ -19,9 +19,12 @@ function filtrar(pagina){
 
         var titulo = $(this).find('a.title').text();
         var isKoreano = titulo.match(/[\u1100-\u11FF|\u3130-\u318F|\uA960-\uA97F|\uAC00-\uD7AF|\uD7B0-\uD7FF]+/g);
+        var isChino = titulo.match(/[\u4e00-\u9fff]+/g);
 
-        if(isKoreano){
-            this.remove();
+        if(isKoreano || isChino ){
+            
+            $(this).remove();
+
         }else{
             postFiltrados.push(this);
         }
@@ -53,7 +56,7 @@ $(function(){
                 success: function(html) {
 
                     proximaPag= getNextPage(html);
-                    postDeProximaPagina  = filtrar(html);
+                    var postDeProximaPagina  = filtrar(html);
                     $(postDeProximaPagina).hide().appendTo('ol.threads').fadeIn("slow");
 
                 },
